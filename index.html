@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Кухня 305 × 232</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;700;800&display=swap">
+<style>
+/* Layout: технический лист проекта — шапка с параметрами, интерактивный план, развёртки, затем ТЗ по разделам в одну колонку ~ 960px */
+:root{
+  --bg:#F5F3F0; --surface:#FFFFFF; --ink:#24211D; --muted:#6B645B; --line:#DCD5CB; --line-strong:#B5ACA0;
+  --oak:#B88A5E; --oak-ink:#86592F; --beige:#E4DDD3; --stone:#ECE7DF; --tile:#DCD2C5;
+  --appl:#2E2B28; --appl-fg:#F2EEE8;
+  --gas:#B9731A; --water:#2B7A82; --power:#C2442F; --vent:#837C73; --heat:#C46A4A;
+  --sel:#E07B2E; --chip:#EEEAE4;
+  --font-display:"Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-body:"Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono:"JetBrains Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#191715; --surface:#221F1C; --ink:#EEE9E2; --muted:#A39B91; --line:#38332E; --line-strong:#5A534C;
+  --oak:#9C7249; --oak-ink:#D9AE80; --beige:#57514A; --stone:#45403A; --tile:#3B3631;
+  --appl:#0F0E0D; --appl-fg:#EEE9E2;
+  --gas:#E3A04A; --water:#56B4BA; --power:#EC7660; --vent:#9F988F; --heat:#DE8B6C;
+  --sel:#F2994A; --chip:#2C2824; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#191715; --surface:#221F1C; --ink:#EEE9E2; --muted:#A39B91; --line:#38332E; --line-strong:#5A534C;
+  --oak:#9C7249; --oak-ink:#D9AE80; --beige:#57514A; --stone:#45403A; --tile:#3B3631;
+  --appl:#0F0E0D; --appl-fg:#EEE9E2;
+  --gas:#E3A04A; --water:#56B4BA; --power:#EC7660; --vent:#9F988F; --heat:#DE8B6C;
+  --sel:#F2994A; --chip:#2C2824; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px 64px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(28px,5vw,42px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:700}
+h3{font-size:16px;font-weight:700}
+p{margin:0;max-width:68ch}
+.muted{color:var(--muted)}
+.mono,td.num,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--oak-ink)}
+
+header.top{display:flex;flex-direction:column;gap:14px}
+.specs{display:flex;flex-wrap:wrap;gap:8px}
+.spec{background:var(--chip);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:13px;display:flex;gap:6px;align-items:baseline}
+.spec b{font-family:var(--font-mono);font-weight:500}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:10px}
+nav.toc a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-strong)}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--oak-ink);border-color:var(--oak-ink)}
+
+.planbox{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:760px){.planbox{grid-template-columns:1fr}}
+.canvas{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
+.canvas svg{display:block;width:100%;min-width:560px;height:auto}
+.layers{display:flex;flex-wrap:wrap;gap:6px}
+.layers button{font:inherit;font-size:13px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.layers button[aria-pressed="false"]{opacity:.5;text-decoration:line-through}
+.layers button:focus-visible,.canvas [data-id]:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card .code{font-family:var(--font-mono);font-size:12px;color:var(--oak-ink)}
+.card ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.card .size{font-family:var(--font-mono);font-size:14px}
+.hint{font-size:13px;color:var(--muted)}
+
+svg text{font-family:var(--font-body);fill:var(--ink)}
+svg .lbl{font-size:7px}
+svg .lbl-s{font-size:5.5px}
+svg .lbl-m{font-family:var(--font-mono);font-size:6px;fill:var(--muted)}
+svg .wall{fill:none;stroke:var(--ink);stroke-width:3}
+svg .thin{fill:none;stroke:var(--line-strong);stroke-width:.6}
+svg [data-id]{cursor:pointer}
+svg [data-id]:hover > *:first-child{stroke:var(--sel)}
+svg .selected > *:first-child{stroke:var(--sel)!important;stroke-width:1.6!important}
+svg .off{display:none}
+.on-oak{fill:#24211D}
+
+.elevs{display:flex;flex-direction:column;gap:18px}
+.elev h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.elev h3 span{font-family:var(--font-body);font-weight:400;font-size:13px;color:var(--muted)}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--font-display);font-weight:700;font-size:13px;background:var(--chip)}
+tr:last-child td{border-bottom:none}
+td.code{font-family:var(--font-mono);color:var(--oak-ink);white-space:nowrap}
+tr.total td{font-weight:600;background:var(--chip)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.note{border-left:3px solid var(--gas);background:var(--surface);padding:12px 14px;border-radius:0}
+.note.warn{border-left-color:var(--power)}
+ul.clean{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+ol.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+ol.steps li::marker{font-family:var(--font-mono);color:var(--oak-ink)}
+.copy{font:inherit;font-size:13px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer;align-self:flex-start}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:no-preference){ svg [data-id] > *:first-child{transition:stroke .15s} }
+body{margin:0}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Проект кухни · вариант А′ · угловая мойка</div>
+  <h1>Кухня 305 × 232</h1>
+  <p class="muted">Готовый проект для мебельщика, электрика и газовой службы: план, развёртки стен, список шкафов, розетки и смета. Сборка мебели своими руками.</p>
+  <div class="specs">
+    <span class="spec">Площадь <b>≈ 7,1 м²</b></span>
+    <span class="spec">Потолок <b>242</b></span>
+    <span class="spec">Столешница <b>h 90</b></span>
+    <span class="spec">Верхние шкафы <b>140–210</b></span>
+    <span class="spec">Газ: панель + духовка</span>
+    <span class="spec">Мебель <b>≈ 95–100 тыс. ₽</b></span>
+  </div>
+  <nav class="toc" aria-label="Разделы">
+    <a href="#plan">План</a><a href="#walls">Развёртки</a><a href="#furniture">ТЗ мебельщику</a><a href="#electric">ТЗ электрику</a><a href="#gas-water">Газ и вода</a><a href="#estimate">Смета</a><a href="#order">Порядок работ</a><a href="#check">Проверить на замере</a>
+  </nav>
+</header>
+
+<section id="plan">
+  <h2>План сверху</h2>
+  <p class="muted">Нажмите на шкаф, технику или розетку, чтобы увидеть размеры и детали. Слои можно скрывать.</p>
+  <div class="layers" id="layers">
+    <button type="button" data-layer="furn" aria-pressed="true"><span class="dot" style="background:var(--oak)"></span>Мебель</button>
+    <button type="button" data-layer="appl" aria-pressed="true"><span class="dot" style="background:var(--appl)"></span>Техника</button>
+    <button type="button" data-layer="power" aria-pressed="true"><span class="dot" style="background:var(--power)"></span>Розетки</button>
+    <button type="button" data-layer="util" aria-pressed="true"><span class="dot" style="background:var(--gas)"></span>Газ, вода, вентиляция</button>
+    <button type="button" data-layer="dims" aria-pressed="true"><span class="dot" style="background:var(--muted)"></span>Размеры</button>
+  </div>
+  <div class="planbox">
+    <div class="canvas"><svg id="plan-svg" viewBox="-34 -34 372 306" role="img" aria-label="План кухни сверху: шкафы на стенах B и C, стол у окна, пенал на стене D"></svg></div>
+    <div class="card" id="info" aria-live="polite"></div>
+  </div>
+  <p class="hint">Стены: A — окно, B — плита и мойка, C — вентиляция и вход, D — пенал и стол. Все размеры в сантиметрах.</p>
+</section>
+
+<section id="walls">
+  <h2>Развёртки стен</h2>
+  <p class="muted">Вид из кухни на каждую стену. Высоты от чистого пола. Кружки с номерами — розетки из ТЗ электрику.</p>
+  <div class="elevs">
+    <div class="elev"><h3>Стена B <span>плита, посудомойка, мойка · слева окно (A), справа угол с C</span></h3><div class="canvas"><svg id="elev-b" role="img" aria-label="Развёртка стены B"></svg></div></div>
+    <div class="elev"><h3>Стена C <span>ящики, холодильник, вход · слева угол с B, справа проём</span></h3><div class="canvas"><svg id="elev-c" role="img" aria-label="Развёртка стены C"></svg></div></div>
+    <div class="elev"><h3>Стена D <span>пенал, стол · слева вход (C), справа окно (A)</span></h3><div class="canvas"><svg id="elev-d" role="img" aria-label="Развёртка стены D"></svg></div></div>
+  </div>
+</section>
+
+<section id="furniture">
+  <div class="eyebrow">ТЗ мебельщику</div>
+  <h2>Шкафы, столешница, фурнитура</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Материалы</h3>
+      <ul>
+        <li>Корпуса: ЛДСП 16 мм белая, кромка 0,4 мм внутри, 2 мм на видимых торцах.</li>
+        <li>Фасады нижние, пенал, цоколь, боковина у холодильника: ЛДСП 16 мм «светлый дуб», матовая, кромка 2 мм в тон.</li>
+        <li>Фасады верхние и короб: ЛДСП 16 мм бежево-серая, матовая, кромка 2 мм в тон.</li>
+        <li>Задние стенки: ХДФ 3 мм. Без задней стенки: Н2 (газ), Н5 (трубы).</li>
+        <li>Декоры недорогих брендов (Lamarty, Kronospan) — из наличия у поставщика.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Высоты и глубины</h3>
+      <ul>
+        <li>Цоколь 140, ножки регулируемые 100–150.</li>
+        <li>Нижние корпуса: высота 720, глубина 560.</li>
+        <li>Столешница 38 мм, глубина 600, верх на 900 от пола.</li>
+        <li>Верхние: низ 1400, верх 2100, глубина 300 (В6 — 350).</li>
+        <li>Короб над верхними: 2100 до потолка, подрезка по месту.</li>
+        <li>Распил с присадкой, размеры фасадов — по расчёту изготовителя с зазором 2–3 мм.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Модули</h3>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Код</th><th>Модуль</th><th>Ш × В × Г, мм</th><th>Фасад и фурнитура</th><th>Особые требования</th></tr></thead>
+    <tbody>
+      <tr><td class="code">Н1</td><td>Съёмная панель у труб</td><td class="num">200 × 860 × 600</td><td>Фасадная ЛДСП «дуб», клипсы или магниты</td><td>Вентиляционная решётка. Закрывает газовый стояк, трубы отопления, край радиатора. Доступ к газовому крану без инструмента.</td></tr>
+      <tr><td class="code">Н2</td><td>Под газовую духовку</td><td class="num">600 × 720 × 560</td><td>Без фасада, под встраиваемую духовку 60</td><td>Без задней стенки. Вентиляция по инструкции духовки. Сверху газовая панель.</td></tr>
+      <tr><td class="code">Н3</td><td>Бутылочница</td><td class="num">150 × 720 × 560</td><td>Механизм бутылочницы 150 с доводчиком</td><td>За ней розетки №2 и №3 — механизм должен вынимать доступ к стене.</td></tr>
+      <tr><td class="code">Н4</td><td>Ниша под посудомойку</td><td class="num">450 × 820 × 560</td><td>Фасад «дуб» под встраиваемую ПММ 45</td><td>Сейчас без машины: фасад на временных петлях, внутри выкатная корзина. Потом фасад крепится на ПММ.</td></tr>
+      <tr><td class="code">Н5</td><td>Угловой под мойку</td><td class="num">900 × 720 × 900</td><td>Двойной фасад «гармошка» 2 × ~300, угловые петли</td><td>Г-образный, без задней стенки. Алюминиевый поддон на дно. Внутри: измельчитель, сифон, фильтр, ведро. Розетки №4, №5 IP44.</td></tr>
+      <tr><td class="code">Н6</td><td>Ящики</td><td class="num">700 × 720 × 560</td><td>3 ящика (фасады ≈ 140 / 290 / 290), направляющие полного выдвижения 500 мм с доводчиком</td><td>Нижний ящик глубокий — под мультиварку.</td></tr>
+      <tr><td class="code">Ц1</td><td>Ящик в цоколе под Н2</td><td class="num">600 × ~100 × 500</td><td>Фасад-цоколь «дуб», направляющие</td><td>Противни, крышки.</td></tr>
+      <tr><td class="code">Ц2</td><td>Ящик в цоколе под Н6</td><td class="num">700 × ~100 × 500</td><td>Фасад-цоколь «дуб», направляющие</td><td>Доски, формы.</td></tr>
+      <tr><td class="code">В1</td><td>Шкаф с вытяжкой</td><td class="num">600 × 430 × 300</td><td>Подъёмная дверца, газлифт</td><td>Низ на 1670 (75 см над конфорками). Под встраиваемую выдвижную вытяжку 60, вырез под воздуховод сверху.</td></tr>
+      <tr><td class="code">В2</td><td>Верхний</td><td class="num">600 × 700 × 300</td><td>Подъёмная дверца, механизм со стопом в любом положении</td><td>Тарелки, кружки. 1 полка.</td></tr>
+      <tr><td class="code">В3</td><td>Верхний узкий</td><td class="num">300 × 700 × 300</td><td>Распашная дверца, 2 петли с доводчиком</td><td>+ планка 20 мм у углового. 2 полки.</td></tr>
+      <tr><td class="code">В4</td><td>Угловой верхний</td><td class="num">600 × 700 × 600</td><td>Двойная распашная «гармошка»</td><td>Г-образный. Решётка-сушка с поддоном над мойкой.</td></tr>
+      <tr><td class="code">В5</td><td>Верхний</td><td class="num">400 × 700 × 300</td><td>Подъёмная дверца, механизм со стопом</td><td>Крупы, кофе. 1 полка.</td></tr>
+      <tr><td class="code">В6</td><td>Под микроволновку</td><td class="num">600 × 700 × 350</td><td>Снизу открытая ниша 350, сверху подъёмная дверца 350 на газлифте</td><td>Розетка №11 внутри. Сзади ниши отверстие под вилку.</td></tr>
+      <tr><td class="code">К1</td><td>Короб над шкафами</td><td class="num">≈ 3700 × ≈ 320</td><td>Фальш-панель бежевая на брусках</td><td>Скрывает воздуховод. Съёмный участок у вентиляции (31 см от B). Над холодильником короба нет.</td></tr>
+      <tr><td class="code">П1</td><td>Пенал на стене D</td><td class="num">550 × 2100 × 350</td><td>2 фасада «дуб» (≈ 1260 + 700), ручка-скоба</td><td>4 полки. Крепить к стене от опрокидывания. Место: 70–125 см от стены C.</td></tr>
+      <tr><td class="code">Б1</td><td>Боковина у холодильника</td><td class="num">600 × 2100 × 16</td><td>ЛДСП «дуб»</td><td>Со стороны проёма. Ниша 650 под отдельностоящий холодильник.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Столешница С1</h3>
+      <ul>
+        <li>Постформинг 38 мм, «светлый камень», влагостойкая, одна заготовка 4,2 м.</li>
+        <li>Г-образная: стена B — 2320 (от стены A до угла), стена C — до 1600 от стены B.</li>
+        <li>Стык в углу еврозапилом, без алюминиевой планки.</li>
+        <li>Вырез под газовую панель — по шаблону панели.</li>
+        <li>Вырез под круглую мойку Ø 450–500 на диагонали угла, центр ≈ 380–400 от каждой стены — по шаблону мойки.</li>
+        <li>Все вырезы и торцы — обработать герметиком. Пристеночный бортик с заглушками.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Фурнитура</h3>
+      <ul>
+        <li>Петли с доводчиком ≈ 18 шт. + угловые для «гармошек».</li>
+        <li>Механизм со стопом в любом положении: 2 комплекта (В2, В5).</li>
+        <li>Газлифты: 2 комплекта (В1, В6).</li>
+        <li>Направляющие полного выдвижения с доводчиком: 5 пар (Н6 × 3, Ц1, Ц2).</li>
+        <li>Механизм бутылочницы 150, решётка-сушка в угол, поддон под мойку.</li>
+        <li>Ножки 100–150, клипсы цоколя, монтажная шина + навесы для верхних.</li>
+        <li>Чёрные торцевые профиль-ручки, ручка-скоба на пенал.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note"><b>Важно для изготовителя.</b> Обе вентиляционные решётки на стене C (31 и 190 см от B, высота 220) не закрывать. Газовые трубы не зашивать глухо. Мойка — чёрная, искусственный камень, круглая, выпуск 90 мм под измельчитель.</div>
+</section>
+
+<section id="electric">
+  <div class="eyebrow">ТЗ электрику</div>
+  <h2>Розетки и линии</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Щиток и линии</h3>
+      <ul>
+        <li>Квартирный щиток у входа (8–12 модулей). Ввод от этажного щитка — через электрика УК, вводной автомат C25.</li>
+        <li><b>Л1</b> розетки над столешницей и у стола: дифавтомат C16, 30 мА.</li>
+        <li><b>Л2</b> мокрая зона (ПММ, измельчитель): дифавтомат C16, 10 мА.</li>
+        <li><b>Л3</b> встроенная техника: дифавтомат C16, 30 мА.</li>
+        <li>Кабель на все линии: ВВГнг-LS 3 × 2,5, медь.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Заземления нет — как делаем</h3>
+      <ul>
+        <li>Кабель тянем трёхжильный, жилу PE пока не подключаем.</li>
+        <li>Подключить PE после перевода на TN-C-S в этажном щитке (заявка в УК).</li>
+        <li>Запрещено: PE на трубы, «зануление» перемычкой в розетке.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tablewrap"><table id="out-table">
+    <thead><tr><th>№</th><th>Что питает</th><th>Стена</th><th>Привязка, см</th><th>Высота от пола, см</th><th>Линия</th><th>Примечание</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>Свет</h3>
+      <ul>
+        <li>Потолочный светильник по центру кухни, 3000 K.</li>
+        <li>Подвес над столом: вывод в потолке над центром стола (≈ 95 см от D, 75 см от A), низ лампы на 70–80 см над столом.</li>
+        <li>Подсветка под верхними: лента 2700–3000 K, CRI ≥ 90, ≈ 3,7 м в профиле с рассеивателем, сенсор в профиле, блок питания над шкафами (розетка №13).</li>
+        <li>Выключатель двухклавишный (общий + подвес): стена D, 15 см от стены C, высота 90.</li>
+      </ul>
+    </div>
+    <div class="note warn"><b>Правила привязки.</b> Розетки не ближе 50 см от газовых труб (особенно №2, №3, №12 — проверить по месту). Над столешницей — не ближе 50–60 см от края мойки. Под мойкой — только IP44, выше сифона. Над плитой и прямо за духовкой и ПММ розеток нет.</div>
+  </div>
+</section>
+
+<section id="gas-water">
+  <div class="eyebrow">Газовая служба и сантехника</div>
+  <h2>Газ, вода, вытяжка</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Газ</h3>
+      <ul>
+        <li>Стояк на стене A, 21 см от стены B. Отвод на стену B на высоте 79.</li>
+        <li>Подключить встраиваемую газовую панель 60 и газовую духовку 60 (Н2) от существующего отвода, сертифицированными шлангами.</li>
+        <li>Техника — с газ-контролем. Кран остаётся доступным через панель Н1.</li>
+        <li>Дверь в кухню снять только после приёмки газа.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Вода и слив</h3>
+      <ul>
+        <li>Выводы у угла B/C (уточнить на замере).</li>
+        <li>Тройник с краном под ПММ, врезка слива ПММ в сифон — сразу, даже если ПММ поставят позже.</li>
+        <li>Измельчитель на выпуск 90 мм, сифон совместимый.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Вытяжка</h3>
+      <ul>
+        <li>Встраиваемая выдвижная 60, 400–600 м³/ч, в шкафу В1.</li>
+        <li>Плоский воздуховод ≈ 2,3 м поверх шкафов вдоль B к решётке на C (31 см от B, h 220), обратный клапан.</li>
+        <li>Вторая решётка (190 см от B) — естественная вентиляция, остаётся открытой.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="estimate">
+  <h2>Смета</h2>
+  <p class="muted">Средние цены по России, конец 2026. Перед заказом — расчёт по этому списку в 2–3 цехах Череповца.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Мебель (лимит 100 тыс. ₽)</th><th>₽</th></tr></thead>
+    <tbody>
+      <tr><td>ЛДСП недорогих брендов (6 листов), ХДФ, распил, кромка, присадка</td><td class="num">41 000–45 000</td></tr>
+      <tr><td>Столешница 4,2 м, еврозапил, вырезы, бортик</td><td class="num">15 000–19 000</td></tr>
+      <tr><td>Мойка чёрная, смеситель чёрный, сифон</td><td class="num">9 000–12 000</td></tr>
+      <tr><td>Фурнитура (с маркетплейсов, без угловой сушилки)</td><td class="num">28 000–31 000</td></tr>
+      <tr class="total"><td>Итого мебель, сборка своими руками</td><td class="num">≈ 93 000–107 000</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Отдельно, вне лимита</th><th>Материалы, ₽</th><th>Работа, ₽</th></tr></thead>
+    <tbody>
+      <tr><td>Электрика: щиток, 3 линии, 15 розеток</td><td class="num">15 000–22 000</td><td class="num">15 000–30 000</td></tr>
+      <tr><td>Газ: подключение панели и духовки</td><td class="num">1 500–2 500</td><td class="num">2 000–5 000</td></tr>
+      <tr><td>Сантехника: тройник ПММ, краны, измельчитель</td><td class="num">1 500–3 000</td><td class="num">2 000–4 000</td></tr>
+      <tr><td>Воздуховод с обратным клапаном</td><td class="num">2 000–3 000</td><td class="num">—</td></tr>
+      <tr><td>Фартук: керамогранит ≈ 2 м²</td><td class="num">4 000–6 000</td><td class="num">4 000–6 000</td></tr>
+      <tr><td>Стены: демонтаж плитки, выравнивание, покраска</td><td class="num">6 000–10 000</td><td class="num">15 000–30 000</td></tr>
+      <tr><td>Пол: кварцвинил ≈ 8 м², подложка, плинтус</td><td class="num">15 000–25 000</td><td class="num">5 000–10 000</td></tr>
+      <tr><td>Свет: лента, потолочный, подвес</td><td class="num">8 000–18 000</td><td class="num">своими силами</td></tr>
+      <tr><td>Стол Ø 70–80 и 2 стула</td><td class="num">15 000–35 000</td><td class="num">—</td></tr>
+      <tr class="total"><td>Итого</td><td class="num">≈ 68 000–125 000</td><td class="num">≈ 43 000–85 000</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted">Чтобы мебель уложилась в 100 тыс.: фурнитуру и мойку брать на маркетплейсах, декоры ЛДСП — из наличия, ничего не заказывать «под Egger».</p>
+</section>
+
+<section id="order">
+  <h2>Порядок работ</h2>
+  <ol class="steps">
+    <li>Демонтаж старой кухни и плитки на стене B. Перестроить гипсокартонную перегородку под проём 80 (дверь пока оставить).</li>
+    <li>Электрика: квартирный щиток, 3 линии, подрозетники, вывод на подвес. Сантехника: выводы, тройник под ПММ.</li>
+    <li>Стены: выравнивание и покраска. Зону фартука не красить — под плитку.</li>
+    <li>Пол по всей кухне, включая место под шкафами и холодильником.</li>
+    <li>Контрольный замер и заказ мебели по этому ТЗ.</li>
+    <li>Сборка нижних шкафов, установка столешницы и мойки.</li>
+    <li>Фартук из керамогранита.</li>
+    <li>Верхние шкафы, воздуховод, короб, подсветка.</li>
+    <li>Газовая служба: подключение панели и духовки. После приёмки — снять дверь.</li>
+    <li>Пенал, стол, стулья, светильники.</li>
+  </ol>
+</section>
+
+<section id="check">
+  <h2>Проверить на замере перед заказом</h2>
+  <ul class="clean">
+    <li>Точное место и высота выводов воды и канализации у угла B/C.</li>
+    <li>Две диагонали комнаты и вертикальность стен B и C.</li>
+    <li>Высота потолка в нескольких точках над шкафами (для подрезки короба).</li>
+    <li>Финальное положение проёма 80 после перестройки перегородки.</li>
+    <li>Насколько радиатор выступает от стены A (зазор Н1 20 см должен его перекрыть).</li>
+    <li>Модели газовой панели, духовки, ПММ 45, мойки и вытяжки — шаблоны вырезов и размеры ниш.</li>
+  </ul>
+  <button type="button" class="copy" id="copy-btn">Скопировать список модулей для расчёта в цехе</button>
+  <span class="hint" id="copy-msg" aria-live="polite"></span>
+</section>
+
+<footer>Проект собран по замерам и фото владельцев. Размеры — в сантиметрах на плане и развёртках, в миллиметрах в таблице модулей.</footer>
+</div>
+
+<script>
+(function(){
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+
+/* ---------- данные ---------- */
+const OUT=[
+ {n:1,what:'Холодильник',wall:'C',ref:'205 от B, за холодильником, сбоку',h:30,line:'Л3',note:'',p:[100,228]},
+ {n:2,what:'Поджиг газовой панели',wall:'B',ref:'85 от A, за бутылочницей',h:30,line:'Л3',note:'≥ 50 см от газа',p:[301,84]},
+ {n:3,what:'Газовая духовка',wall:'B',ref:'91 от A, за бутылочницей',h:30,line:'Л3',note:'≥ 50 см от газа',p:[301,92]},
+ {n:4,what:'Посудомойка',wall:'B',ref:'150 от A, в шкафу Н5',h:45,line:'Л2',note:'IP44',p:[301,150]},
+ {n:5,what:'Измельчитель',wall:'B',ref:'162 от A, в шкафу Н5',h:45,line:'Л2',note:'IP44, пневмокнопка на столешнице',p:[301,162]},
+ {n:6,what:'Столешница (комбайн, мясорубка)',wall:'B',ref:'100 от A',h:107,line:'Л1',note:'',p:[301,104]},
+ {n:7,what:'Столешница (мультиварка, блендер)',wall:'B',ref:'120 от A',h:107,line:'Л1',note:'≥ 60 см от мойки',p:[301,118]},
+ {n:8,what:'Кофемашина',wall:'C',ref:'120 от B',h:107,line:'Л1',note:'≥ 60 см от мойки',p:[185,228]},
+ {n:9,what:'Чайник',wall:'C',ref:'132 от B',h:107,line:'Л1',note:'',p:[173,228]},
+ {n:10,what:'Свободная (блендер и др.)',wall:'C',ref:'144 от B',h:107,line:'Л1',note:'',p:[161,228]},
+ {n:11,what:'Микроволновка',wall:'C',ref:'155 от B, внутри В6',h:180,line:'Л3',note:'',p:[150,220]},
+ {n:12,what:'Вытяжка',wall:'B',ref:'50 от A, над В1',h:220,line:'Л3',note:'≥ 50 см от газового стояка',p:[301,50]},
+ {n:13,what:'Подсветка (блок питания)',wall:'B',ref:'180 от A, над шкафами',h:220,line:'Л3',note:'',p:[301,182]},
+ {n:14,what:'У стола, двойная (зарядка)',wall:'D',ref:'50 от A',h:88,line:'Л1',note:'',p:[3,50]}
+];
+
+const INFO={
+ n1:{code:'Н1',t:'Съёмная панель у труб',s:'200 × 860 × 600',d:['Закрывает газовый стояк, трубы отопления и край радиатора.','Вентиляционная решётка, крепление на клипсах или магнитах — снимается рукой.','Столешница проходит над панелью до стены A.']},
+ n2:{code:'Н2',t:'Шкаф под газовую духовку',s:'600 × 720 × 560',d:['Встраиваемая газовая духовка 60 см, сверху газовая панель.','Без задней стенки — подвод газа и вентиляция.','В цоколе — ящик Ц1 под противни.']},
+ n3:{code:'Н3',t:'Бутылочница',s:'150 × 720 × 560',d:['Масла, соусы, специи — рядом с плитой.','Отделяет посудомойку от горячей духовки.','За ней розетки №2 и №3 (низ, 30 см).']},
+ n4:{code:'Н4',t:'Ниша под посудомойку',s:'450 × 820 × 560',d:['Встраиваемая ПММ 45 см.','Пока машины нет: фасад на временных петлях, внутри выкатная корзина.','Тройник на воду, слив и розетку №4 сделать сразу.']},
+ n5:{code:'Н5',t:'Угловой шкаф под мойку',s:'900 × 720 × 900',d:['Круглая чёрная мойка Ø 45–50 на диагонали угла.','Двойной фасад «гармошка», без задней стенки, поддон на дно.','Внутри: измельчитель, сифон, фильтр, ведро. Розетки №4 и №5, IP44.']},
+ n6:{code:'Н6',t:'Шкаф с ящиками',s:'700 × 720 × 560',d:['3 ящика: приборы / кастрюли / мультиварка и сковородки.','Направляющие полного выдвижения с доводчиком.','В цоколе — ящик Ц2.']},
+ p1:{code:'П1',t:'Пенал на стене D',s:'550 × 2100 × 350',d:['Внизу: комбайн, мясорубка, блендер. Посередине: запасы. Наверху: редкие вещи.','70–125 см от стены C, не сужает проход от входа.','Крепить к стене от опрокидывания.']},
+ table:{code:'Стол',t:'Обеденный стол на двоих',s:'Ø 70–80, высота 75',d:['Светлый угол у окна, как на референсе.','Стулья с двух сторон, под углом 90°.','Над столом подвесной светильник, рядом розетка №14.']},
+ chair:{code:'Стул',t:'Стулья, 2 шт.',s:'≈ 42 × 42',d:['Деревянный каркас, светлая мягкая обивка.']},
+ hob:{code:'Техника',t:'Газовая панель 60',s:'600 × 520, на чёрном стекле',d:['4 конфорки, газ-контроль.','Вытяжка над ней на 75 см выше конфорок (низ ≈ 167 см).','Поджиг — розетка №2.']},
+ sink:{code:'Техника',t:'Мойка круглая, чёрная',s:'Ø 450–500, выпуск 90 мм',d:['Искусственный камень, неглубокая (≈ 18 см) — удобнее при росте 182.','Центр на диагонали угла, ≈ 38–40 см от каждой стены.','Смеситель чёрный матовый, высокий излив.']},
+ fridge:{code:'Техника',t:'Холодильник',s:'сейчас 540 × 560 × 1720, ниша 650',d:['Ниша рассчитана на будущий холодильник шириной 60 и высотой до 200 см.','Над холодильником пусто: там вентиляционная решётка.','Дверь навесить петлями к проёму.']},
+ gas:{code:'Газ',t:'Газовый стояк и отвод',s:'21 см от B на стене A, отвод на h 79',d:['Панель и духовка подключаются от существующего отвода.','Кран доступен через съёмную панель Н1.','Розетки — не ближе 50 см.']},
+ water:{code:'Вода',t:'Выводы воды и канализации',s:'угол B/C, уточнить на замере',d:['Мойка, измельчитель, ПММ.','Тройник с краном под ПММ — сразу.']},
+ vent1:{code:'Вент.',t:'Решётка под вытяжку',s:'31 см от B, h 220',d:['Сюда идёт воздуховод от В1 поверх шкафов.','Обратный клапан.']},
+ vent2:{code:'Вент.',t:'Решётка естественной вентиляции',s:'190 см от B, h 220',d:['Остаётся открытой.','Поэтому над холодильником нет антресоли и короба.']},
+ rad:{code:'Отопление',t:'Радиатор',s:'73 см, 40 см от стены B',d:['Под окном, ближе к плите.','Из-за него кухня не продолжается вдоль окна.']},
+ win:{code:'Окно',t:'Окно',s:'139 см, по 83 от углов, подоконник 80',d:['Стол стоит в этом светлом углу.']}
+};
+OUT.forEach(o=>{INFO['o'+o.n]={code:'Розетка №'+o.n,t:o.what,s:'стена '+o.wall+' · '+o.ref+' · h '+o.h,d:['Линия '+o.line+(o.line==='Л2'?' (мокрая зона, 10 мА)':o.line==='Л3'?' (встроенная техника)':' (розетки над столешницей)')].concat(o.note?[o.note]:[])};});
+
+/* ---------- план ---------- */
+const plan=document.getElementById('plan-svg');
+const layers={};
+['util','furn','appl','power','dims'].forEach(k=>{layers[k]=el('g',{'data-layer':k},plan);});
+// стены
+el('path',{d:'M80 232 L305 232 L305 0 L0 0 L0 232',class:'wall'},plan);
+plan.insertBefore(plan.lastChild,layers.util);
+
+function item(layer,id,shape,attrs,label,lx,ly,cls){
+  const g=el('g',{'data-id':id,tabindex:'0',role:'button','aria-label':(INFO[id]?INFO[id].t:id)},layers[layer]);
+  el(shape,attrs,g);
+  if(label)el('text',{x:lx,y:ly,'text-anchor':'middle','dominant-baseline':'central',class:cls||'lbl'},g,label);
+  return g;
+}
+// утилиты
+item('util','win','rect',{x:83,y:-3,width:139,height:6,fill:'var(--surface)',stroke:'var(--water)','stroke-width':1});
+item('util','rad','rect',{x:192,y:3,width:73,height:9,rx:1.5,fill:'var(--heat)','fill-opacity':.35,stroke:'var(--heat)','stroke-width':.6},'радиатор',228.5,7.5,'lbl-s');
+const gg=item('util','gas','circle',{cx:284,cy:4,r:3.2,fill:'var(--gas)',stroke:'var(--gas)','stroke-width':.6});
+el('path',{d:'M287 4 L301.5 4 L301.5 30',fill:'none',stroke:'var(--gas)','stroke-width':1.2,'stroke-dasharray':'3 2'},gg);
+item('util','water','circle',{cx:294,cy:222,r:3.5,fill:'var(--water)',stroke:'var(--water)','stroke-width':.6});
+item('util','vent1','rect',{x:268,y:229.5,width:12,height:5,fill:'var(--vent)',stroke:'var(--vent)','stroke-width':.6});
+item('util','vent2','rect',{x:109,y:229.5,width:12,height:5,fill:'var(--vent)',stroke:'var(--vent)','stroke-width':.6});
+// мебель
+const base={fill:'var(--stone)',stroke:'var(--line-strong)','stroke-width':.6};
+item('furn','n1','rect',Object.assign({x:245,y:0,width:60,height:20,'stroke-dasharray':'2 1.5'},base),'Н1',262,10,'lbl-s');
+item('furn','n2','rect',Object.assign({x:245,y:20,width:60,height:60},base));
+item('furn','n3','rect',Object.assign({x:245,y:80,width:60,height:15},base),'Н3',258,87.5,'lbl-s');
+item('furn','n4','rect',Object.assign({x:245,y:95,width:60,height:45,'stroke-dasharray':'3 2'},base),'Н4 · ПММ',268,117.5);
+item('furn','n5','polygon',Object.assign({points:'245,140 305,140 305,232 215,232 215,172 245,172'},base));
+item('furn','n6','rect',Object.assign({x:145,y:172,width:70,height:60},base),'Н6 ящики',180,190);
+item('furn','p1','rect',{x:0,y:107,width:35,height:55,fill:'var(--oak)',stroke:'var(--oak-ink)','stroke-width':.6},'П1',17.5,134.5,'lbl on-oak');
+item('furn','table','circle',{cx:95,cy:75,r:40,fill:'var(--oak)','fill-opacity':.55,stroke:'var(--oak-ink)','stroke-width':.6},'стол Ø 80',95,75);
+item('furn','chair','rect',{x:9,y:54,width:42,height:42,rx:8,fill:'var(--beige)',stroke:'var(--line-strong)','stroke-width':.6});
+item('furn','chair','rect',{x:74,y:119,width:42,height:42,rx:8,fill:'var(--beige)',stroke:'var(--line-strong)','stroke-width':.6});
+// техника
+const hg=item('appl','hob','rect',{x:249,y:24,width:52,height:52,rx:2,fill:'var(--appl)',stroke:'var(--appl)','stroke-width':.6});
+[[262,37],[288,37],[262,63],[288,63]].forEach(c=>el('circle',{cx:c[0],cy:c[1],r:6,fill:'none',stroke:'var(--appl-fg)','stroke-width':.6},hg));
+el('text',{x:275,y:50,'text-anchor':'middle','dominant-baseline':'central',class:'lbl-s',style:'fill:var(--appl-fg)'},hg,'плита');
+item('appl','sink','circle',{cx:267,cy:194,r:22.5,fill:'var(--appl)','fill-opacity':.85,stroke:'var(--appl)','stroke-width':.6});
+el('text',{x:267,y:194,'text-anchor':'middle','dominant-baseline':'central',class:'lbl-s',style:'fill:var(--appl-fg)'},layers.appl.lastChild,'мойка');
+const fg=item('appl','fridge','rect',{x:88,y:176,width:54,height:56,rx:2,fill:'var(--appl)',stroke:'var(--appl)','stroke-width':.6});
+el('text',{x:115,y:204,'text-anchor':'middle','dominant-baseline':'central',class:'lbl-s',style:'fill:var(--appl-fg)'},fg,'холодильник');
+// розетки
+OUT.forEach(o=>{const g=el('g',{'data-id':'o'+o.n,tabindex:'0',role:'button','aria-label':'Розетка '+o.n+': '+o.what},layers.power);
+  el('circle',{cx:o.p[0],cy:o.p[1],r:3.6,fill:'var(--surface)',stroke:'var(--power)','stroke-width':.9},g);
+  el('text',{x:o.p[0],y:o.p[1]+.2,'text-anchor':'middle','dominant-baseline':'central',style:'font-size:4.2px;font-weight:600;fill:var(--power)'},g,o.n);});
+// размеры
+const D=layers.dims;
+function dim(x1,y1,x2,y2,t,tx,ty,anchor){el('line',{x1,y1,x2,y2,class:'thin'},D);el('text',{x:tx,y:ty,'text-anchor':anchor||'middle',class:'lbl-m'},D,t);}
+dim(0,-20,305,-20,'305',152.5,-23);
+dim(0,-12,83,-12,'83',41.5,-14);dim(222,-12,305,-12,'83',263.5,-14);dim(83,-12,222,-12,'окно 139',152.5,-14);
+dim(-14,0,-14,232,'232',-16,118,'end');
+dim(0,246,80,246,'вход 80',40,256);
+el('text',{x:152.5,y:-28,'text-anchor':'middle',class:'lbl'},D,'A · окно');
+el('text',{x:318,y:116,'text-anchor':'middle',class:'lbl'},D,'B');
+el('text',{x:200,y:262,'text-anchor':'middle',class:'lbl'},D,'C');
+el('text',{x:-26,y:100,'text-anchor':'middle',class:'lbl'},D,'D');
+
+/* ---------- карточка ---------- */
+const info=document.getElementById('info');
+function show(id){
+  const it=INFO[id];if(!it)return;
+  document.querySelectorAll('svg .selected').forEach(n=>n.classList.remove('selected'));
+  document.querySelectorAll('[data-id="'+id+'"]').forEach(n=>n.classList.add('selected'));
+  info.innerHTML='';
+  const c=document.createElement('div');c.className='code';c.textContent=it.code;info.appendChild(c);
+  const h=document.createElement('h3');h.textContent=it.t;info.appendChild(h);
+  const s=document.createElement('div');s.className='size';s.textContent=it.s;info.appendChild(s);
+  const ul=document.createElement('ul');it.d.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});info.appendChild(ul);
+}
+plan.addEventListener('click',e=>{const g=e.target.closest('[data-id]');if(g)show(g.getAttribute('data-id'));});
+plan.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const g=e.target.closest('[data-id]');if(g){e.preventDefault();show(g.getAttribute('data-id'));}}});
+show('n5');
+
+document.querySelectorAll('#layers button').forEach(b=>b.addEventListener('click',()=>{
+  const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',on);
+  layers[b.dataset.layer].classList.toggle('off',!on);
+}));
+
+/* ---------- развёртки ---------- */
+function elev(id,len,items){
+  const svg=document.getElementById(id);
+  svg.setAttribute('viewBox','-26 -8 '+(len+40)+' 262');
+  const Y=h=>242-h;
+  el('rect',{x:0,y:0,width:len,height:242,fill:'var(--surface)',stroke:'var(--line-strong)','stroke-width':.6},svg);
+  [0,14,90,140,210,242].forEach(h=>{el('text',{x:-3,y:Y(h)+2,'text-anchor':'end',class:'lbl-m'},svg,h);el('line',{x1:-1,y1:Y(h),x2:0,y2:Y(h),class:'thin'},svg);});
+  items.forEach(it=>{
+    const x=it.x,w=it.w,y=it.h1!=null?Y(it.h1):0,hh=it.h1!=null?(it.h1-it.h0):0;
+    let a={x,y,width:w,height:hh,'stroke-width':.5};
+    switch(it.k){
+      case 'tile':Object.assign(a,{fill:'var(--tile)',stroke:'none'});break;
+      case 'base':Object.assign(a,{fill:'var(--oak)',stroke:'var(--oak-ink)'});break;
+      case 'upper':Object.assign(a,{fill:'var(--beige)',stroke:'var(--line-strong)'});break;
+      case 'fascia':Object.assign(a,{fill:'var(--beige)','fill-opacity':.5,stroke:'var(--line-strong)','stroke-dasharray':'3 2'});break;
+      case 'counter':Object.assign(a,{fill:'var(--stone)',stroke:'var(--line-strong)'});break;
+      case 'appl':Object.assign(a,{fill:'var(--appl)',stroke:'var(--appl)',rx:1});break;
+      case 'dash':Object.assign(a,{fill:'none',stroke:'var(--line-strong)','stroke-dasharray':'3 2'});break;
+      case 'grey':Object.assign(a,{fill:'var(--chip)',stroke:'var(--line-strong)','stroke-dasharray':'2 1.5'});break;
+      case 'plinth':Object.assign(a,{fill:'var(--oak)','fill-opacity':.7,stroke:'var(--oak-ink)'});break;
+      case 'open':Object.assign(a,{fill:'none',stroke:'var(--ink)','stroke-dasharray':'4 3'});break;
+      case 'vent':Object.assign(a,{fill:'var(--vent)',stroke:'var(--vent)'});break;
+      case 'seam':el('line',{x1:x,y1:Y(it.h0),x2:x,y2:Y(it.h1),stroke:'var(--oak-ink)','stroke-width':.5},svg);return;
+      case 'hseam':el('line',{x1:x,y1:Y(it.h),x2:x+w,y2:Y(it.h),stroke:'var(--oak-ink)','stroke-width':.5},svg);return;
+      case 'gas':el('polyline',{points:it.pts.map(p=>p[0]+','+Y(p[1])).join(' '),fill:'none',stroke:'var(--gas)','stroke-width':1.4},svg);return;
+      case 'pend':el('line',{x1:x,y1:0,x2:x,y2:Y(it.h)-6,stroke:'var(--ink)','stroke-width':.5},svg);el('path',{d:'M'+(x-9)+' '+Y(it.h)+' L'+(x+9)+' '+Y(it.h)+' L'+(x+4)+' '+(Y(it.h)-6)+' L'+(x-4)+' '+(Y(it.h)-6)+' Z',fill:'var(--appl)'},svg);return;
+      case 'sw':el('rect',{x:x-3,y:Y(it.h)-3,width:6,height:6,rx:1,fill:'var(--surface)',stroke:'var(--ink)','stroke-width':.6},svg);el('text',{x:x+6,y:Y(it.h)+2,class:'lbl-m'},svg,'выкл.');return;
+      case 'o':{const g=el('g',{},svg);el('circle',{cx:x,cy:Y(it.h),r:3.3,fill:'var(--surface)',stroke:'var(--power)','stroke-width':.9},g);el('text',{x:x,y:Y(it.h)+.2,'text-anchor':'middle','dominant-baseline':'central',style:'font-size:4px;font-weight:600;fill:var(--power)'},g,it.n);return;}
+    }
+    el('rect',a,svg);
+    if(it.t){const fill=(it.k==='appl')?'var(--appl-fg)':(it.k==='base'||it.k==='plinth')?'#24211D':'var(--ink)';
+      el('text',{x:x+w/2,y:y+hh/2,'text-anchor':'middle','dominant-baseline':'central',class:w<20?'lbl-s':'lbl',style:'fill:'+fill},svg,it.t);}
+  });
+  el('line',{x1:-4,y1:242,x2:len+4,y2:242,stroke:'var(--ink)','stroke-width':1.2},svg);
+}
+elev('elev-b',232,[
+ {k:'tile',x:0,w:232,h0:90,h1:140},
+ {k:'grey',x:0,w:20,h0:0,h1:86,t:'Н1'},
+ {k:'base',x:20,w:60,h0:14,h1:86},{k:'appl',x:23,w:54,h0:17,h1:76,t:'духовка'},
+ {k:'base',x:80,w:15,h0:14,h1:86,t:'Н3'},
+ {k:'dash',x:95,w:45,h0:0,h1:86,t:'ПММ 45'},
+ {k:'base',x:140,w:92,h0:14,h1:86,t:'Н5 · мойка в углу'},{k:'seam',x:172,h0:14,h1:86},
+ {k:'plinth',x:20,w:75,h0:0,h1:14},{k:'dash',x:22,w:56,h0:2,h1:12,t:'Ц1'},{k:'plinth',x:140,w:92,h0:0,h1:14},
+ {k:'counter',x:0,w:232,h0:86,h1:90},{k:'appl',x:26,w:48,h0:90,h1:92},
+ {k:'upper',x:20,w:60,h0:167,h1:210,t:'В1'},{k:'appl',x:22,w:56,h0:164,h1:167},
+ {k:'upper',x:80,w:60,h0:140,h1:210,t:'В2'},{k:'upper',x:140,w:32,h0:140,h1:210,t:'В3'},{k:'upper',x:172,w:60,h0:140,h1:210,t:'В4'},
+ {k:'fascia',x:20,w:212,h0:210,h1:242,t:'К1 · короб воздуховода'},
+ {k:'gas',pts:[[3,0],[3,242]]},{k:'gas',pts:[[3,79],[26,79]]},
+ {k:'o',x:84,h:30,n:2},{k:'o',x:91,h:30,n:3},{k:'o',x:150,h:45,n:4},{k:'o',x:162,h:45,n:5},
+ {k:'o',x:100,h:107,n:6},{k:'o',x:120,h:107,n:7},{k:'o',x:50,h:220,n:12},{k:'o',x:180,h:220,n:13}
+]);
+elev('elev-c',305,[
+ {k:'tile',x:0,w:160,h0:90,h1:140},
+ {k:'base',x:0,w:90,h0:14,h1:86,t:'Н5'},{k:'seam',x:60,h0:14,h1:86},
+ {k:'base',x:90,w:70,h0:14,h1:86},{k:'hseam',x:90,w:70,h:72},{k:'hseam',x:90,w:70,h:43},
+ {k:'plinth',x:0,w:160,h0:0,h1:14},{k:'dash',x:92,w:66,h0:2,h1:12,t:'Ц2'},
+ {k:'counter',x:0,w:160,h0:86,h1:90},
+ {k:'appl',x:165,w:54,h0:0,h1:172,t:'холодильник'},
+ {k:'base',x:223,w:2,h0:0,h1:210},
+ {k:'open',x:225,w:80,h0:0,h1:200,t:'проём 80'},
+ {k:'upper',x:0,w:60,h0:140,h1:210,t:'В4'},{k:'upper',x:60,w:40,h0:140,h1:210,t:'В5'},
+ {k:'upper',x:100,w:60,h0:175,h1:210,t:'В6'},{k:'dash',x:100,w:60,h0:140,h1:175},{k:'appl',x:106,w:48,h0:143,h1:171,t:'СВЧ'},
+ {k:'fascia',x:0,w:160,h0:210,h1:242,t:'К1'},
+ {k:'vent',x:25,w:12,h0:210,h1:230},{k:'vent',x:184,w:12,h0:210,h1:230},
+ {k:'o',x:120,h:107,n:8},{k:'o',x:132,h:107,n:9},{k:'o',x:144,h:107,n:10},{k:'o',x:155,h:186,n:11},{k:'o',x:205,h:30,n:1}
+]);
+elev('elev-d',232,[
+ {k:'base',x:70,w:55,h0:14,h1:140,t:'П1'},{k:'base',x:70,w:55,h0:140,h1:210},{k:'plinth',x:70,w:55,h0:0,h1:14},
+ {k:'dash',x:136,w:42,h0:0,h1:85,t:'стул'},
+ {k:'counter',x:117,w:80,h0:72,h1:76},{k:'grey',x:154,w:6,h0:0,h1:72},
+ {k:'pend',x:157,h:150},
+ {k:'sw',x:15,h:90},
+ {k:'o',x:182,h:88,n:14}
+]);
+
+/* ---------- таблица розеток ---------- */
+const tb=document.querySelector('#out-table tbody');
+OUT.forEach(o=>{const tr=document.createElement('tr');
+  [o.n,o.what,o.wall,o.ref,o.h,o.line,o.note||'—'].forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;if(i===0||i===4)td.className='num';if(i===5)td.className='code';tr.appendChild(td);});
+  tb.appendChild(tr);});
+
+/* ---------- копирование списка ---------- */
+const btn=document.getElementById('copy-btn'),msg=document.getElementById('copy-msg');
+btn.addEventListener('click',()=>{
+  const rows=[...document.querySelectorAll('#furniture table tbody tr')].map(tr=>[...tr.children].map(td=>td.textContent.trim()).join(' | '));
+  const text='Кухня 305×232 — модули\nКорпус ЛДСП 16 белая; фасады низ — светлый дуб, верх — бежево-серая; кромка 2 мм на видимых.\n'+rows.join('\n');
+  try{navigator.clipboard.writeText(text).then(()=>{msg.textContent='Скопировано.';},()=>{msg.textContent='Не удалось скопировать: выделите таблицу модулей вручную.';});}
+  catch(e){msg.textContent='Не удалось скопировать: выделите таблицу модулей вручную.';}
+});
+})();
+</script>
+</body>
+</html>
